@@ -149,9 +149,11 @@ app.route('/gamer/:user')
         CreatePlayer(req.body);
     })
 
+    //Update User
     .put(function (req, res) {
         CreatePlayer(req.body);
         SortByScore();
+        res.send(gamerArray);
     })
 
 app.get('/ranking', function (req, res) {
