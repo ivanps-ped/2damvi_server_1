@@ -6,10 +6,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 let gamer = {
+    position: '',
+    alies: '',
     name: '',
     surname: '',
     score: 0
 };
+
+let gamerArray = []
+
 let output = {
     error: false,
     errCode: 200,
@@ -48,33 +53,42 @@ app.route('/gamer')
         }
         //If correct fields
         else {
-            //! If Name and Surname is repe  ated
-            if (gamer.name == req.body.name && gamer.surname == req.body.surname) {
-                output = {
-                    error: true,
-                    errCode: 503,
-                    message: 'The player was alredy existing'
-                };
-            }
             //* If Name AND Surname are original
-            else {
-                //Get correct inputs
-                gamer = {
-                    name: req.body.name,
-                    surname: req.body.surname,
-                    score: req.body.score
-                };
-                //Set output to correct fields
-                output = {
-                    error: false,
-                    errCode: 200,
-                    message: 'Player created',
-                    output: gamer
-                };
-            }
+            //Get correct inputs
+            gamer = {
+                alies: req.body.name + req.body.surname,
+                position: 1,
+                name: req.body.name,
+                surname: req.body.surname,
+                score: req.body.score,
+            };
+            //Set output to correct fields
+            output = {
+                error: false,
+                errCode: 200,
+                message: 'Player created',
+                output: gamer
+            };
+            //! If Name and Surname is repeated
+            gamerArray.forEach(function (item, index, array) {
+                if (gamer.name == gamerArray[index].name && gamer.surname == gamerArray[index].surname) {
+                    output = {
+                        error: true,
+                        errCode: 503,
+                        message: 'The player was alredy existing'
+                    };
+                }
+            })
+            //Add new User to "Database" array
+            let newGamer = gamerArray.push(gamer);
         }
         // Send output
         res.send(output);
+    })
+
+app.route('/ranking')
+    .get(function (req, res) {
+
     })
 
 app.listen(3000, () => {
