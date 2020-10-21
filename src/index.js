@@ -7,13 +7,28 @@ app.use(bodyParser.json());
 
 let gamer = {
     position: '',
-    alies: '',
+    alias: '',
     name: '',
     surname: '',
     score: 0
 };
 
-let gamerArray = []
+let gamerArray = [
+    gamer = {
+        position: 1,
+        alias: 'iperez',
+        name: 'ivan',
+        surname: 'perez',
+        score: 1000
+    },
+    gamer = {
+        position: 3,
+        alias: 'mmoñas',
+        name: 'manolo',
+        surname: 'moñas',
+        score: 200
+    }
+]
 
 let output = {
     error: false,
@@ -31,10 +46,9 @@ app.route('/')
         res.send(output);
     });
 
-app.route('/hola')
-    .get(function (req, res) {
-        res.send("Hi I guess...");
-    });
+app.get('/hola', function (req, res) {
+    res.send("Hi I guess...");
+});
 
 app.route('/gamer')
     //If enter with Get
@@ -56,7 +70,7 @@ app.route('/gamer')
             //* If Name AND Surname are original
             //Get correct inputs
             gamer = {
-                alies: req.body.name.charAt(0) + req.body.surname,
+                alias: req.body.name.charAt(0) + req.body.surname,
                 position: 1,
                 name: req.body.name,
                 surname: req.body.surname,
@@ -86,25 +100,46 @@ app.route('/gamer')
         res.send(output);
     })
 
-app.route('/ranking')
-    .get(function (req, res) {
-        //Order Array by Score (Using Bubble method)
-        for (var i = 0; i < gamerArray.length; i++) {
-            for (var j = 1; j < gamerArray.length - i; j++) {
-                if (gamerArray[j - 1].score < gamerArray[j].score) {
-                    var temp = gamerArray[j - 1].score;
-                    gamerArray[j - 1].score = gamerArray[j].score;
-                    gamerArray[j].score = temp;
-                }
+//Use Query Parameters
+app.route('/gamer/:user')
+    //Get user information
+    .get(function (req, res) {    
+        output = {
+            error: true,
+            errCode: 504,
+            message: 'The player does not exist'
+        };    
+        for (var i = 0; i < gamerArray.length; i++){
+            if (gamerArray[i].alias == req.params.user){
+                output = gamerArray[i];       
             }
         }
-        //Change "Position" using real Array position
-        for (var i = 0; i < gamerArray.length; i++) {
-            gamerArray[i].position = i + 1;
-        }
-        //Show total Ranking
-        res.send(gamerArray);
+        
+        res.send(output);
     })
+    //Post user information
+    .post(function (req, res) {
+        
+    })
+
+app.get('/ranking', function (req, res) {
+    //Order Array by Score (Using Bubble method)
+    for (var i = 0; i < gamerArray.length; i++) {
+        for (var j = 1; j < gamerArray.length - i; j++) {
+            if (gamerArray[j - 1].score < gamerArray[j].score) {
+                var temp = gamerArray[j - 1].score;
+                gamerArray[j - 1].score = gamerArray[j].score;
+                gamerArray[j].score = temp;
+            }
+        }
+    }
+    //Change "Position" using real Array position
+    for (var i = 0; i < gamerArray.length; i++) {
+        gamerArray[i].position = i + 1;
+    }
+    //Show total Ranking
+    res.send(gamerArray);
+})
 
 app.listen(3000, () => {
     console.log("The server is starting at port 3000");
