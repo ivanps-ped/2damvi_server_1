@@ -36,6 +36,70 @@ let output = {
     message: ''
 };
 
+function CheckIfRepeated(nameToCheck, surnameToCheck) {
+    gamerArray.forEach(function (item, index, array) {
+        if (nameToCheck == gamerArray[index].name && surnameToCheck == gamerArray[index].surname) {
+            output = {
+                error: true,
+                errCode: 503,
+                message: 'The player was alredy existing'
+            };
+        }
+    })
+}
+
+function IsNull(nameToCheck, surnameToCheck, scoreToCheck) {
+    if (!nameToCheck || !surnameToCheck || !scoreToCheck || scoreToCheck < 0) {
+        output = {
+            error: true,
+            errCode: 502,
+            message: 'Required fields: name, surname, score'
+        };
+        return true;
+    }
+}
+
+function CreatePlayer(input) {
+    if (!IsNull(input.name, input.surname, input.score)) {
+        //* If Name AND Surname are original
+        //Get correct inputs
+        gamer = {
+            alias: input.name.charAt(0) + input.surname,
+            position: 1,
+            name: input.name,
+            surname: input.surname,
+            score: input.score,
+        };
+        //Set output to correct fields
+        output = {
+            error: false,
+            errCode: 200,
+            message: 'Player created',
+            output: gamer
+        };
+        //Check if Name and Surname is repeated
+        CheckIfRepeated(gamer.name, gamer.surname);
+        //Add new User to "Database" array
+        let newGamer = gamerArray.push(gamer);
+    }
+}
+
+function SortByScore() {
+    //Order Array by Score (Using Bubble method)
+    for (var i = 0; i < gamerArray.length; i++) {
+        for (var j = 1; j < gamerArray.length - i; j++) {
+            if (gamerArray[j - 1].score < gamerArray[j].score) {
+                var temp = gamerArray[j - 1].score;
+                gamerArray[j - 1].score = gamerArray[j].score;
+                gamerArray[j].score = temp;
+            }
+        }
+    }
+    //Change "Position" using real Array position
+    for (var i = 0; i < gamerArray.length; i++) {
+        gamerArray[i].position = i + 1;
+    }
+}
 app.route('/')
     .get(function (req, res) {
         output = {
@@ -57,45 +121,7 @@ app.route('/gamer')
     })
     //If enter with Post
     .post(function (req, res) {
-        //! In case there's not enought fields
-        if (!req.body.name || !req.body.surname || !req.body.score) {
-            output = {
-                error: true,
-                errCode: 502,
-                message: 'Required fields: name, surname, score'
-            };
-        }
-        //If correct fields
-        else {
-            //* If Name AND Surname are original
-            //Get correct inputs
-            gamer = {
-                alias: req.body.name.charAt(0) + req.body.surname,
-                position: 1,
-                name: req.body.name,
-                surname: req.body.surname,
-                score: req.body.score,
-            };
-            //Set output to correct fields
-            output = {
-                error: false,
-                errCode: 200,
-                message: 'Player created',
-                output: gamer
-            };
-            //! If Name and Surname is repeated
-            gamerArray.forEach(function (item, index, array) {
-                if (gamer.name == gamerArray[index].name && gamer.surname == gamerArray[index].surname) {
-                    output = {
-                        error: true,
-                        errCode: 503,
-                        message: 'The player was alredy existing'
-                    };
-                }
-            })
-            //Add new User to "Database" array
-            let newGamer = gamerArray.push(gamer);
-        }
+        CreatePlayer(req.body);
         // Send output
         res.send(output);
     })
@@ -103,40 +129,33 @@ app.route('/gamer')
 //Use Query Parameters
 app.route('/gamer/:user')
     //Get user information
-    .get(function (req, res) {    
+    .get(function (req, res) {
         output = {
             error: true,
             errCode: 504,
             message: 'The player does not exist'
-        };    
-        for (var i = 0; i < gamerArray.length; i++){
-            if (gamerArray[i].alias == req.params.user){
-                output = gamerArray[i];       
+        };
+        for (var i = 0; i < gamerArray.length; i++) {
+            if (gamerArray[i].alias == req.params.user) {
+                output = gamerArray[i];
             }
         }
-        
+
         res.send(output);
     })
+
     //Post user information
     .post(function (req, res) {
-        
+        CreatePlayer(req.body);
+    })
+
+    .put(function (req, res) {
+        CreatePlayer(req.body);
+        SortByScore();
     })
 
 app.get('/ranking', function (req, res) {
-    //Order Array by Score (Using Bubble method)
-    for (var i = 0; i < gamerArray.length; i++) {
-        for (var j = 1; j < gamerArray.length - i; j++) {
-            if (gamerArray[j - 1].score < gamerArray[j].score) {
-                var temp = gamerArray[j - 1].score;
-                gamerArray[j - 1].score = gamerArray[j].score;
-                gamerArray[j].score = temp;
-            }
-        }
-    }
-    //Change "Position" using real Array position
-    for (var i = 0; i < gamerArray.length; i++) {
-        gamerArray[i].position = i + 1;
-    }
+    SortByScore();
     //Show total Ranking
     res.send(gamerArray);
 })
