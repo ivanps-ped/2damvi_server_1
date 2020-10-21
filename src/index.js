@@ -87,24 +87,24 @@ app.route('/gamer')
     })
 
 app.route('/ranking')
-.get(function (req, res) {
-    //Order Array by Score (Using Bubble method)
-    for (var i = 0; i < gamerArray.length; i++){
-        for (var j = 1; j < gamerArray.length-i; j++){
-            if (gamerArray[j-1].score < gamerArray[j].score){
-                var temp = gamerArray[j-1].score;
-                gamerArray[j-1].score = gamerArray[j].score;
-                gamerArray[j].score = temp;
+    .get(function (req, res) {
+        //Order Array by Score (Using Bubble method)
+        for (var i = 0; i < gamerArray.length; i++) {
+            for (var j = 1; j < gamerArray.length - i; j++) {
+                if (gamerArray[j - 1].score < gamerArray[j].score) {
+                    var temp = gamerArray[j - 1].score;
+                    gamerArray[j - 1].score = gamerArray[j].score;
+                    gamerArray[j].score = temp;
+                }
             }
         }
-    }
-    //Change "Position" using real Array position
-    for (var i = 0; i < gamerArray.length; i++){
-        gamerArray[i].position = i+1;
-    }
-    //Show total Ranking
-    res.send(gamerArray);
-})
+        //Change "Position" using real Array position
+        for (var i = 0; i < gamerArray.length; i++) {
+            gamerArray[i].position = i + 1;
+        }
+        //Show total Ranking
+        res.send(gamerArray);
+    })
 
 app.listen(3000, () => {
     console.log("The server is starting at port 3000");
