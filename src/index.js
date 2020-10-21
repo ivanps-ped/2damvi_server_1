@@ -56,7 +56,7 @@ app.route('/gamer')
             //* If Name AND Surname are original
             //Get correct inputs
             gamer = {
-                alies: req.body.name + req.body.surname,
+                alies: req.body.name.charAt(0) + req.body.surname,
                 position: 1,
                 name: req.body.name,
                 surname: req.body.surname,
@@ -84,11 +84,6 @@ app.route('/gamer')
         }
         // Send output
         res.send(output);
-    })
-
-app.route('/ranking')
-    .get(function (req, res) {
-
     })
 
 app.listen(3000, () => {
