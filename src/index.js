@@ -21,7 +21,7 @@ let gamerArray = [
         surname: 'moñas',
         score: 200
     },
-        gamer = {
+    gamer = {
         position: 1,
         alias: 'iperez',
         name: 'ivan',
@@ -106,16 +106,19 @@ function IsNull(nameToCheck, surnameToCheck, scoreToCheck) {
     return false;
 };
 
-function CreatePlayer(input) {
+function CreatePlayer(input, newAlias) {
     //* If Name AND Surname are original
     //Get correct inputs
     gamer = {
-        alias: input.name.charAt(0) + input.surname,
+        alias: newAlias,
         position: 1,
         name: input.name,
         surname: input.surname,
         score: input.score,
     };
+    //Add new User to "Database" array
+    let newGamer = gamerArray.push(gamer);
+    SortByScore();
     //Set output to correct fields
     output = {
         error: false,
@@ -123,8 +126,6 @@ function CreatePlayer(input) {
         message: 'Player created',
         output: gamer
     };
-    //Add new User to "Database" array
-    let newGamer = gamerArray.push(gamer);
 };
 
 function SortByScore() {
@@ -164,7 +165,7 @@ app.route('/gamer')
         if (!IsNull(req.body.name, req.body.surname, req.body.score)) {
             //If player doesn't exist
             if (!CheckIfExists(req.body.name, req.body.surname)) {
-                CreatePlayer(req.body);
+                CreatePlayer(req.body, req.body.name.charAt(0) + req.body.surname);
             }
         }
         // Send output
@@ -188,7 +189,15 @@ app.route('/gamer/:user')
 
     //Post user information
     .post(function (req, res) {
-        CreatePlayer(req.body);
+        //If valid parameters
+        if (!IsNull(req.body.name, req.body.surname, req.body.score)) {
+            //If player doesn't exist
+            if (!CheckIfExists(req.body.name, req.body.surname)) {
+                CreatePlayer(req.body, req.params.user);                
+            }
+        }
+        // Send output
+        res.send(output);
     })
 
     //Update User (search by alias in URL)
@@ -204,7 +213,7 @@ app.route('/gamer/:user')
             //If user exists (Substitute user)
             else {
                 gamerArray[values[1]] = {
-                    alias: req.body.name.charAt(0) + req.body.surname,
+                    alias: req.params.user,
                     position: 1,
                     name: req.body.name,
                     surname: req.body.surname,
