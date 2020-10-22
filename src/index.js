@@ -33,6 +33,7 @@ let gamerArray = [
 let output = {
     error: false,
     errCode: 200,
+    userNumber: 0,
     message: ''
 };
 
@@ -53,6 +54,7 @@ function OutputCase(errorCode) {
             output = {
                 error: true,
                 errCode: 503,
+                userNumber: gamerArray.length,
                 message: 'The player was alredy existing'
             };
             break;
@@ -60,6 +62,7 @@ function OutputCase(errorCode) {
             output = {
                 error: true,
                 errCode: 504,
+                userNumber: gamerArray.length,
                 message: 'The player does not exist'
             };
             break;
@@ -67,6 +70,7 @@ function OutputCase(errorCode) {
             output = {
                 error: false,
                 errCode: 20,
+                userNumber: gamerArray.length,
                 message: 'This server works!'
             };
             break;
@@ -74,11 +78,15 @@ function OutputCase(errorCode) {
             output = {
                 error: false,
                 errCode: 200,
+                userNumber: gamerArray.length,
                 message: 'Player updated',
                 output: gamerArray
             };
             break;
+        default:
+            break;
     }
+
 };
 
 function CheckIfAliasRepeated(aliasToCheck) {
@@ -99,6 +107,7 @@ function IsNull(nameToCheck, surnameToCheck, scoreToCheck) {
         output = {
             error: true,
             errCode: 502,
+            userNumber: gamerArray.length,
             message: 'Required fields: name, surname, score'
         };
         return true;
@@ -123,6 +132,7 @@ function CreatePlayer(input, newAlias) {
     output = {
         error: false,
         errCode: 200,
+        userNumber: gamerArray.length,
         message: 'Player created',
         output: gamer
     };
@@ -230,7 +240,14 @@ app.route('/gamer/:user')
 app.get('/ranking', function (req, res) {
     SortByScore();
     //Show total Ranking
-    res.send(gamerArray);
+    output = {
+        error: false,
+        errCode: 200,
+        userNumber: gamerArray.length,
+        message: 'Player created',
+        output: gamerArray
+    };
+    res.send(output);
 })
 
 app.listen(3000, () => {
