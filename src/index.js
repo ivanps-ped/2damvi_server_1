@@ -139,20 +139,7 @@ function CreatePlayer(input, newAlias) {
 };
 
 function SortByScore() {
-    //Order Array by Score (Using Bubble method)
-    for (var i = 0; i < gamerArray.length; i++) {
-        for (var j = 1; j < gamerArray.length - i; j++) {
-            if (gamerArray[j - 1].score < gamerArray[j].score) {
-                var temp = gamerArray[j - 1];
-                gamerArray[j - 1] = gamerArray[j];
-                gamerArray[j] = temp;
-            }
-        }
-    }
-    //Change "Position" using real Array position
-    for (var i = 0; i < gamerArray.length; i++) {
-        gamerArray[i].position = i + 1;
-    }
+    gamerArray.sort((a, b) => Math.sign(b.score - a.score));
 };
 
 app.route('/')
@@ -203,7 +190,7 @@ app.route('/gamer/:user')
         if (!IsNull(req.body.name, req.body.surname, req.body.score)) {
             //If player doesn't exist
             if (!CheckIfExists(req.body.name, req.body.surname)) {
-                CreatePlayer(req.body, req.params.user);                
+                CreatePlayer(req.body, req.params.user);
             }
         }
         // Send output
