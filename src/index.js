@@ -140,9 +140,7 @@ function CreatePlayer(input, newAlias) {
 
 function SortByScore() {
     gamerArray.sort((a, b) => Math.sign(b.score - a.score));
-    gamerArray.forEach(function (item, index, array) {
-        item.position = index+1;
-    })
+    gamerArray.forEach(function (item, index, array) {item.position = index+1;})
 };
 
 app.route('/')
