@@ -1,5 +1,5 @@
 {
-  "name": "cat.inspedralbes.cat",
+  "name": "cat.inspedralbes.nodejsserver",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "minimist": "^1.2.5"
   }
-} 
+}
