@@ -1,243 +1,133 @@
 const express = require("express");
-const bodyParser = require('body-parser');
-const app = express();
+const bodyParser = require("body-parser");
+const app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-let gamer = {
-    position: '',
-    alias: '',
-    name: '',
-    surname: '',
-    score: 0
-};
+let code100 = { code: 100, error: false, message: '2-DAMVI Server Up' };
+let code200 = { code: 200, error: false, message: 'Player Exists' };
+let code201 = { code: 201, error: false, message: 'Player Correctly Created' };
+let code202 = { code: 201, error: false, message: 'Player Correctly Updated' };
+let codeError502 = { code: 503, error: true, message: 'The field: name, surname, score are mandatories (the score value has to be >0)' };
+let codeError503 = { code: 503, error: true, message: 'Error: Player Exists' };
+let codeError504 = { code: 504, error: true, message: 'Error: Player not found' };
 
-let gamerArray = [
-    gamer = {
-        position: 3,
-        alias: 'mmoñas',
-        name: 'manolo',
-        surname: 'moñas',
-        score: 200
-    },
-    gamer = {
-        position: 1,
-        alias: 'iperez',
-        name: 'ivan',
-        surname: 'perez',
-        score: 1000
-    },
+var players = [
+    { position: "1", alias: "jperez", name: "Jose", surname: "Perez", score: 1000, created: "2020-11-03T15:20:21.377Z"},
+    { position: "2", alias: "jsanz", name: "Juan", surname: "Sanz", score: 950, created: "2020-11-03T15:20:21.377Z" },
+    { position: "3", alias: "mgutierrez", name: "Maria", surname: "Gutierrez", score: 850, created: "2020-11-03T15:20:21.377Z" }
 ];
 
-let output = {
-    error: false,
-    errCode: 200,
-    userNumber: 0,
-    message: ''
-};
+function UpdateRanking() {
+    //Order the ranking
+    players.sort((a, b) => (a.score <= b.score) ? 1 : -1);
 
-function CheckIfExists(nameToCheck, surnameToCheck) {
-    var isRepeated = false;
-    gamerArray.forEach(function (item, index, array) {
-        if (nameToCheck == gamerArray[index].name && surnameToCheck == gamerArray[index].surname) {
-            OutputCase(503);
-            isRepeated = true;
-        }
-    })
-    return isRepeated;
-};
-
-function OutputCase(errorCode) {
-    switch (errorCode) {
-        case 503:
-            output = {
-                error: true,
-                errCode: 503,
-                userNumber: gamerArray.length,
-                message: 'The player was alredy existing'
-            };
-            break;
-        case 504:
-            output = {
-                error: true,
-                errCode: 504,
-                userNumber: gamerArray.length,
-                message: 'The player does not exist'
-            };
-            break;
-        case 20:
-            output = {
-                error: false,
-                errCode: 20,
-                userNumber: gamerArray.length,
-                message: 'This server works!'
-            };
-            break;
-        case 505:
-            output = {
-                error: false,
-                errCode: 200,
-                userNumber: gamerArray.length,
-                message: 'Player updated',
-                output: gamerArray
-            };
-            break;
-        default:
-            break;
+    //Position Update
+    for (x = 0; x < players.length; x++) {
+        players[x].position = x + 1;
     }
-
 };
 
-function CheckIfAliasRepeated(aliasToCheck) {
-    var isRepeated = false;
-    var arrayIndex;
-    gamerArray.forEach(function (item, index, array) {
-        if (aliasToCheck == gamerArray[index].alias) {
-            OutputCase(504);
-            isRepeated = true;
-            arrayIndex = index;
-        }
-    })
-    return [isRepeated, arrayIndex];
-};
-
-function IsNull(nameToCheck, surnameToCheck, scoreToCheck) {
-    if (!nameToCheck || !surnameToCheck || !scoreToCheck || scoreToCheck < 0) {
-        output = {
-            error: true,
-            errCode: 502,
-            userNumber: gamerArray.length,
-            message: 'Required fields: name, surname, score'
-        };
-        return true;
-    }
-    return false;
-};
-
-function CreatePlayer(input, newAlias) {
-    //* If Name AND Surname are original
-    //Get correct inputs
-    gamer = {
-        alias: newAlias,
-        position: 1,
-        name: input.name,
-        surname: input.surname,
-        score: input.score,
-    };
-    //Add new User to "Database" array
-    let newGamer = gamerArray.push(gamer);
-    SortByScore();
-    //Set output to correct fields
-    output = {
-        error: false,
-        errCode: 200,
-        userNumber: gamerArray.length,
-        message: 'Player created',
-        output: gamer
-    };
-};
-
-function SortByScore() {
-    gamerArray.sort((a, b) => Math.sign(b.score - a.score));
-    gamerArray.forEach(function (item, index, array) {item.position = index+1;})
-};
-
-app.route('/')
-    .get(function (req, res) {
-        OutputCase(20);
-        res.send(output);
-    });
-
-app.get('/hola', function (req, res) {
-    res.send("Hi I guess...");
+app.get('/', function (req, res) {
+    //code funciona ok
+    res.send(code100);
 });
 
-app.route('/gamer')
-    .get(function (req, res) {
-        res.send('You MUST provide a JSON structure, for that purpose use POST');
-    })
-
-    .post(function (req, res) {
-        //If valid parameters
-        if (!IsNull(req.body.name, req.body.surname, req.body.score)) {
-            //If player doesn't exist
-            if (!CheckIfExists(req.body.name, req.body.surname)) {
-                CreatePlayer(req.body, req.body.name.charAt(0) + req.body.surname);
-            }
-        }
-        // Send output
-        res.send(output);
-    })
-
-//Use Query Parameters
-app.route('/gamer/:user')
-    //Get user information
-    .get(function (req, res) {
-        //Change to output error in advance (Player does not exist)
-        OutputCase(504);
-        //Change output if player exists
-        for (var i = 0; i < gamerArray.length; i++) {
-            if (gamerArray[i].alias == req.params.user) {
-                output = gamerArray[i];
-            }
-        }
-        res.send(output);
-    })
-
-    //Post user information
-    .post(function (req, res) {
-        //If valid parameters
-        if (!IsNull(req.body.name, req.body.surname, req.body.score)) {
-            //If player doesn't exist
-            if (!CheckIfExists(req.body.name, req.body.surname)) {
-                CreatePlayer(req.body, req.params.user);
-            }
-        }
-        // Send output
-        res.send(output);
-    })
-
-    //Update User (search by alias in URL)
-    .put(function (req, res) {
-        //Return where the user is in the Array
-        var values = CheckIfAliasRepeated(req.params.user);
-        //If valid input
-        if (!IsNull(req.body.name, req.body.surname, req.body.score)) {
-            //If user doesn't exists
-            if (!values[0]) {
-                OutputCase(504);
-            }
-            //If user exists (Substitute user)
-            else {
-                gamerArray[values[1]] = {
-                    alias: req.params.user,
-                    position: 1,
-                    name: req.body.name,
-                    surname: req.body.surname,
-                    score: req.body.score,
-                }
-                //Set output to correct fields
-                OutputCase(505);
-            }
-        }
-        SortByScore();
-        res.send(output);
-    })
-
 app.get('/ranking', function (req, res) {
-    SortByScore();
-    //Show total Ranking
-    output = {
-        error: false,
-        errCode: 200,
-        userNumber: gamerArray.length,
-        message: 'Player created',
-        output: gamerArray
-    };
-    res.send(output);
-})
+    let ranking = { namebreplayers: players.length, players: players };
+    res.send(ranking);
+});
+
+app.get('/players/:alias', function (req, res) {
+    //Player Search
+    var index = players.findIndex(j => j.alias === req.params.alias);
+
+    if (index >= 0) {
+        //Player exists
+        response = code200;
+        response.jugador = players[index];
+    } else {
+        //Player doesn't exists
+        response = codeError504;
+    }
+    res.send(response);
+});
+
+app.post('/players/:alias', function (req, res) {
+    var paramAlias = req.params.alias || '';
+    var paramName = req.body.name || '';
+    var paramSurname = req.body.surname || '';
+    var paramScore = req.body.score || '';
+
+    if (paramAlias === '' || paramName === '' || paramSurname === '' || parseInt(paramScore) <= 0 || paramScore === '') {
+        response = codeError502;
+    } else {
+        //Player Search
+        var index = players.findIndex(j => j.alias === paramAlias)
+
+        if (index != -1) {
+            //Player allready exists
+            response = codeError503;
+        } else {
+            //Add Player
+            players.push({ 
+                position: '', 
+                alias: paramAlias, 
+                name: paramName, 
+                surname: paramSurname, 
+                score: paramScore ,
+                created: new Date()
+            });
+            //Sort the ranking
+            UpdateRanking();
+            //Search Player Again
+            index = players.findIndex(j => j.alias === paramAlias);
+            //Response return
+            response = code201;
+            response.player = players[index];
+        }
+    }
+    res.send(response);
+});
+
+app.put('/players/:alias', function (req, res) {
+    var paramalias = req.params.alias || '';
+    var paramname = req.body.name || '';
+    var paramsurname = req.body.surname || '';
+    var paramScore = req.body.score || '';
+
+    if (paramalias === '' || paramname === '' || paramsurname === '' || parseInt(paramScore) <= 0 || paramScore === '') {
+        response = codeError502; //Paràmetres incomplerts
+    } else {
+        //Player Search
+        var index = players.findIndex(j => j.alias === paramalias)
+
+        if (index != -1) {
+            //Update Player
+            players[index] = { 
+                position: '', 
+                alias: paramalias, 
+                name: paramname, 
+                surname: paramsurname, 
+                score: paramScore,
+                created:  players[index].created,
+                updated: new Date()
+            };
+            //Sort the ranking
+            UpdateRanking();
+            //Search Player Again
+            index = players.findIndex(j => j.alias === paramalias);
+            //Response return
+            response = code202;
+            response.jugador = players[index];
+        } else {
+            response = codeError504;
+        }
+    }
+    res.send(response);
+});
 
 app.listen(3000, () => {
-    console.log("The server is starting at port 3000");
+    console.log("El servidor está inicializado en el puerto 3000");
 });
