@@ -2,5 +2,5 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
-/nod_modules/
+/nod_modules/*
 /package-lock.json
