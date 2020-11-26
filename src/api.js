@@ -1,52 +1,3 @@
-const express = require("express");
-var argv = require('minimist')(process.argv.slice(2));
-const bodyParser = require("body-parser");
-const app = express()
-var subpath = express();
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.use("/v1", subpath);
-var swagger = require('swagger-node-express').createNew(subpath);
-
-app.use(express.static('dist'));
-
-swagger.setApiInfo({
-    title: "example API",
-    description: "API to do something, manage something...",
-    termsOfServiceUrl: "",
-    contact: "yourname@something.com",
-    license: "",
-    licenseUrl: ""
-});
-
-// Set api-doc path
-swagger.configureSwaggerPaths('', 'api-docs', '');
-
-// Configure the API domain
-var domain = 'localhost';
-if (argv.domain !== undefined)
-    domain = argv.domain;
-else
-    console.log('No --domain=xxx specified, taking default hostname "localhost".')
-
-// Configure the API port
-var port = 8080;
-if (argv.port !== undefined)
-    port = argv.port;
-else
-    console.log('No --port=xxx specified, taking default port ' + port + '.')
-
-// Set and display the application URL
-var applicationUrl = 'http://' + domain + ':' + port;
-console.log('snapJob API running on ' + applicationUrl);
-
-swagger.configure(applicationUrl, '1.0.0');
-
-// Start the web server
-app.listen(port);
-
 let code100 = { code: 100, error: false, message: '2-DAMVI Server Up' };
 let code200 = { code: 200, error: false, message: 'Player Exists' };
 let code201 = { code: 201, error: false, message: 'Player Correctly Created' };
@@ -56,7 +7,7 @@ let codeError503 = { code: 503, error: true, message: 'Error: Player Exists' };
 let codeError504 = { code: 504, error: true, message: 'Error: Player not found' };
 
 var players = [
-    { position: "1", alias: "jperez", name: "Jose", surname: "Perez", score: 1000, created: "2020-11-03T15:20:21.377Z" },
+    { position: "1", alias: "jperez", name: "Jose", surname: "Perez", score: 1000, created: "2020-11-03T15:20:21.377Z"},
     { position: "2", alias: "jsanz", name: "Juan", surname: "Sanz", score: 950, created: "2020-11-03T15:20:21.377Z" },
     { position: "3", alias: "mgutierrez", name: "Maria", surname: "Gutierrez", score: 850, created: "2020-11-03T15:20:21.377Z" }
 ];
@@ -112,12 +63,12 @@ app.post('/players/:alias', function (req, res) {
             response = codeError503;
         } else {
             //Add Player
-            players.push({
-                position: '',
-                alias: paramAlias,
-                name: paramName,
-                surname: paramSurname,
-                score: paramScore,
+            players.push({ 
+                position: '', 
+                alias: paramAlias, 
+                name: paramName, 
+                surname: paramSurname, 
+                score: paramScore ,
                 created: new Date()
             });
             //Sort the ranking
@@ -146,13 +97,13 @@ app.put('/players/:alias', function (req, res) {
 
         if (index != -1) {
             //Update Player
-            players[index] = {
-                position: '',
-                alias: paramalias,
-                name: paramname,
-                surname: paramsurname,
+            players[index] = { 
+                position: '', 
+                alias: paramalias, 
+                name: paramname, 
+                surname: paramsurname, 
                 score: paramScore,
-                created: players[index].created,
+                created:  players[index].created,
                 updated: new Date()
             };
             //Sort the ranking

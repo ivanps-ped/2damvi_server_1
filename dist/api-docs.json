@@ -1,175 +1,262 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
-      "title": "Sample spec",
-      "description": "Sample spec for Swagger",
-      "termsOfService": "http://swagger.io/terms/"
-    },
-    "basePath": "/",
-    "tags" : [
-      {"name": "Ranking", 
+  "swagger": "2.0",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Ranking",
       "description": "Veure usuaris ordenats"
-      },
-      {"name": "PlayerAlias", 
-        "description": "Administració d'usuaris"
-      }
-    ],
-    "schemes": [
-      "https"
-    ],
-    "consumes": [
-      "application/json"
-    ],
-    "produces": [
-      "application/json"
-    ],
-    "paths": {
-      "/path/to/method": {
-         "post": {
-            "tags": ["PlayerAlias"],
-            "description": "what this API does",
-            "operationId": "for the URL",
-            "produces": [
-              "application/json"
-            ],
-            "parameters": [
-                {
-                  "name": "Job Parameters",
-                  "in": "body",
-                  "description": "Job to add to the database",
-                  "required": true,
-                "schema": {
-                  "$ref": "#/definitions/create"
-                  }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "create response",
-                "schema": {
-                   "$ref": "#/definitions/response"
-                }
-              }
-            }
-          }
-      },
-      "/path/to/method/{someVariable}": {
-          "delete":{
-            "tags":["PlayerAlias"],
-            "description":"Deletes a something",
-            "operationId":"delete",
-            "produces": [
-              "application/json"
-            ],
-            "parameters":[
-                {
-                  "name": "someVariable",
-                  "in": "path",
-                  "description": "ID to delete",
-                  "required": true,
-                  "type": "string"
-                }
-              ],
-            "responses": {
-              "200": {
-                "description": "delete response",
-                "schema":{
-                  "$ref":"#/definitions/deleteRes"
-                }
-              }
-            }
-          },
-        "get":{
-            "tags": ["PlayerAlias"],
-            "description": "Returns the status of something",
-            "operationId": "findById",
-            "produces": [
-              "application/json"
-            ],
-            "parameters": [
-                {
-                  "name": "ID",
-                  "in": "path",
-                  "description": "ID to fetch",
-                  "required": true,
-                  "type": "string"
-                }
-              ],
-          "responses": {
-              "200": {
-                "description": "response",
-                "schema": {
-                  "$ref": "#/definitions/response1"
-                }
-              }
-            }
-          }
-        }
     },
-    "definitions": {
-      "create": {
-        "properties": {
-          "eventId": {
-            "required":true,
-            "type": "string",
-            "example": "mathmaticial"
-          },
-          "numberRequired": {
-            "required":true,
-            "type":"integer",
-            "format": "int64",
-            "example": 500
-          } 
-        }
-      },
-      "response1": {
-          "properties": {
-            "jobID": {
-              "required":true,
-              "type": "string",
-              "example": "23423456543"
-            },
-            "request": {
-              "required":true,
-              "type": "schema",
-              "example": {
-                "eventId":"mathmaticial",
-                "numberRequired": 500
+    {
+      "name": "PlayerAlias",
+      "description": "Administració d'usuaris"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/ranking": {
+      "get": {
+        "tags": [
+          "Ranking"
+        ],
+        "description": "Retorna el llistat d'usuaris totals",
+        "operationId": "getRanking",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "": {
+            "schema": {
+              "properties": {
+                "namebreplayers": {
+                  "type": "int",
+                  "example": "1"
+                },
+                "players": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/user"
+                  }
+                }
               }
             }
+          }
+        }
+      }
+    },
+    "/players/{alias}": {
+      "get": {
+        "tags": [
+          "PlayerAlias"
+        ],
+        "description": "Retorna informació de l'usuari introduït",
+        "operationId": "findByAlias",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "alias",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jugador trobat",
+            "schema": {
+              "$ref": "#/definitions/response200", 
+              "properties": {               
+                "jugador": {
+                  "type": "object",
+                  "$ref": "#/definitions/user"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Falta introduïr parámetres",
+            "schema": {
+              "$ref": "#/definitions/response504"
+            }
+          }
         }
       },
-      "response": {
-          "properties": {
-              "jobID": {
-                "required": true,
-                "type" : "string",
-                "example" : "12321432423"
-              }
+      "post": {
+        "tags": [
+          "PlayerAlias"
+        ],
+        "description": "what this API does",
+        "operationId": "for the URL",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "alias",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "nom",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "cognom",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "puntuació",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
           }
-      },
-      "delete": {
-          "properties": {
-              "jobID": {
-                "required": true,
-                "type" : "string",
-                "example" : "234344234234"
-              },
-              "status" : {
-                "required": true,
-                "type": "string",
-                "example": "deleted"
+        ],
+        "responses": {
+          "201": {
+            "description": "Jugador trobat",
+            "schema": {
+              "properties": {
+                "namebreplayers": {
+                  "type": "int",
+                  "example": "1"
+                }
               }
+            }
+          },
+          "503": {
+            "description": "Falta introduïr parámetres",
+            "schema": {
+              "$ref": "#/definitions/response503"
+            }
           }
+        }
       },
-      "400error" : {
-         "properties": {
-          "message": {
-            "type": "string",
-            "example" : "400 Bad Request"
+      "put": {
+        "tags": [
+          "PlayerAlias"
+        ],
+        "description": "Deletes a something",
+        "operationId": "delete",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "someVariable",
+            "in": "path",
+            "description": "ID to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete response",
+            "schema": {
+              "$ref": "#/definitions/response1"
+            }
           }
         }
       }
     }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "String",
+          "example": "0"
+        },
+        "alias": {
+          "type": "String",
+          "example": "auser"
+        },
+        "name": {
+          "type": "String",
+          "example": "admin"
+        },
+        "surname": {
+          "type": "String",
+          "example": "user"
+        },
+        "score": {
+          "type": "int",
+          "example": "0"
+        },
+        "created": {
+          "type": "date-time",
+          "example": "2020-01-01T00:00:00.377Z"
+        }
+      }
+    },
+    "response200": {
+      "properties": {
+        "Code": {
+          "required": true,
+          "type": "int",
+          "example": "200"
+        },
+        "Error": {
+          "required": true,
+          "type": "String",
+          "example": "false"
+        },
+        "Message": {
+          "required": true,
+          "type": "String",
+          "example": "Player Exists"
+        }
+      }
+    },
+    "response503": {
+      "properties": {
+        "code": {
+          "type": "int",
+          "example": "503"
+        },
+        "error": {
+          "type": "string",
+          "example": "true"
+        },
+        "message": {
+          "type": "int",
+          "example": "The field: name, surname, score are mandatories (the score value has to be >0)"
+        }
+      }
+    },
+    "response504": {
+      "properties": {
+        "code": {
+          "type": "int",
+          "example": "504"
+        },
+        "error": {
+          "type": "String",
+          "example": "true"
+        },
+        "message": {
+          "type": "String",
+          "example": "Error: Player not found"
+        }
+      }
+    }
   }
+}
