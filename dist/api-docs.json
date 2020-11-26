@@ -85,7 +85,7 @@
             }
           },
           "504": {
-            "description": "Falta introduïr parámetres",
+            "description": "Jugador no trobat",
             "schema": {
               "$ref": "#/definitions/response504"
             }
@@ -96,8 +96,7 @@
         "tags": [
           "PlayerAlias"
         ],
-        "description": "what this API does",
-        "operationId": "for the URL",
+        "description": "Afegeix un nou jugador",
         "produces": [
           "application/json"
         ],
@@ -109,39 +108,30 @@
             "type": "string"
           },
           {
-            "name": "nom",
-            "in": "path",
+            "in": "body",
+            "name": "body",
+            "description": "Atributs del nou usuari",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "cognom",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "puntuació",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
+            "schema": {
+              "$ref": "#/definitions/newuser"
+            }
           }
         ],
         "responses": {
           "201": {
-            "description": "Jugador trobat",
+            "description": "Jugador creat correctament",
             "schema": {
-              "properties": {
-                "namebreplayers": {
-                  "type": "int",
-                  "example": "1"
-                }
-              }
+              "$ref": "#/definitions/response201"
             }
           },
+          "502": {
+            "description": "Falta introduïr parámetres correctes",
+            "schema": {
+              "$ref": "#/definitions/response502"
+            }
+          },          
           "503": {
-            "description": "Falta introduïr parámetres",
+            "description": "El jugador ja existeix",
             "schema": {
               "$ref": "#/definitions/response503"
             }
@@ -152,25 +142,44 @@
         "tags": [
           "PlayerAlias"
         ],
-        "description": "Deletes a something",
-        "operationId": "delete",
+        "description": "Actualitza un jugador ja existent",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "someVariable",
+            "name": "alias",
             "in": "path",
-            "description": "ID to delete",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Atributs del nou usuari",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newuser"
+            }
           }
         ],
         "responses": {
-          "200": {
-            "description": "delete response",
+          "202": {
+            "description": "Jugador actualitzat correctament",
             "schema": {
-              "$ref": "#/definitions/response1"
+              "$ref": "#/definitions/response202"
+            }
+          },
+          "502": {
+            "description": "Falta introduïr parámetres correctes",
+            "schema": {
+              "$ref": "#/definitions/response502"
+            }
+          },
+          "504": {
+            "description": "Jugador no trobat",
+            "schema": {
+              "$ref": "#/definitions/response504"
             }
           }
         }
@@ -187,11 +196,11 @@
         },
         "alias": {
           "type": "String",
-          "example": "auser"
+          "example": "euser"
         },
         "name": {
           "type": "String",
-          "example": "admin"
+          "example": "example"
         },
         "surname": {
           "type": "String",
@@ -204,6 +213,23 @@
         "created": {
           "type": "date-time",
           "example": "2020-01-01T00:00:00.377Z"
+        }
+      }
+    },
+    "newuser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "String",
+          "example": "example"
+        },
+        "surname": {
+          "type": "String",
+          "example": "user"
+        },
+        "score": {
+          "type": "int",
+          "example": "10"
         }
       }
     },
@@ -226,6 +252,60 @@
         }
       }
     },
+    "response201": {
+      "properties": {
+        "Code": {
+          "required": true,
+          "type": "int",
+          "example": "201"
+        },
+        "Error": {
+          "required": true,
+          "type": "String",
+          "example": "false"
+        },
+        "Message": {
+          "required": true,
+          "type": "String",
+          "example": "Player Correctly Created"
+        }
+      }
+    },
+    "response202": {
+      "properties": {
+        "Code": {
+          "required": true,
+          "type": "int",
+          "example": "202"
+        },
+        "Error": {
+          "required": true,
+          "type": "String",
+          "example": "false"
+        },
+        "Message": {
+          "required": true,
+          "type": "String",
+          "example": "Player Correctly Updated"
+        }
+      }
+    },
+    "response502": {
+      "properties": {
+        "code": {
+          "type": "int",
+          "example": "502"
+        },
+        "error": {
+          "type": "string",
+          "example": "true"
+        },
+        "message": {
+          "type": "int",
+          "example": "The field: name, surname, score are mandatories (the score value has to be >0)"
+        }
+      }
+    },
     "response503": {
       "properties": {
         "code": {
@@ -238,7 +318,7 @@
         },
         "message": {
           "type": "int",
-          "example": "The field: name, surname, score are mandatories (the score value has to be >0)"
+          "example": "Error: Player Exists"
         }
       }
     },
