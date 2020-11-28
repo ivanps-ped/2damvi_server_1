@@ -32,7 +32,8 @@ else
     console.log('No --port=xxx specified, taking default port ' + port + '.')
 
 // Set and display the application URL
-var applicationUrl = 'http://' + domain + ':' + port;
+//var applicationUrl = 'http://' + domain + ':' + port;
+var applicationUrl = 'http://' + domain;
 console.log('snapJob API running on ' + applicationUrl);
 
 swagger.configure(applicationUrl, '1.0.0');
