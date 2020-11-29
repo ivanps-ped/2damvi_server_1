@@ -24,7 +24,7 @@ const apis = (app) => {
     };
 
     app.get('/', function (req, res) {
-        res.sendFile(__dirname + '/dist/index.html');
+        res.sendFile(__dirname + '/../dist/api-docs.json');     
     });
 
     app.get('/ranking', function (req, res) {
