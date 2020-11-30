@@ -208,7 +208,7 @@
         },
         "score": {
           "type": "int",
-          "example": "0"
+          "example": 0
         },
         "created": {
           "type": "date-time",
@@ -238,7 +238,7 @@
         "Code": {
           "required": true,
           "type": "int",
-          "example": "200"
+          "example": 200
         },
         "Error": {
           "required": true,
@@ -257,7 +257,7 @@
         "Code": {
           "required": true,
           "type": "int",
-          "example": "201"
+          "example": 201
         },
         "Error": {
           "required": true,
@@ -276,7 +276,7 @@
         "Code": {
           "required": true,
           "type": "int",
-          "example": "202"
+          "example": 202
         },
         "Error": {
           "required": true,
@@ -294,7 +294,7 @@
       "properties": {
         "code": {
           "type": "int",
-          "example": "502"
+          "example": 502
         },
         "error": {
           "type": "string",
@@ -302,7 +302,7 @@
         },
         "message": {
           "type": "int",
-          "example": "The field: name, surname, score are mandatories (the score value has to be >0)"
+          "example": "The field: name, surname, score are mandatories (the score value has to be > 0)"
         }
       }
     },
@@ -310,7 +310,7 @@
       "properties": {
         "code": {
           "type": "int",
-          "example": "503"
+          "example": 503
         },
         "error": {
           "type": "string",
@@ -326,7 +326,7 @@
       "properties": {
         "code": {
           "type": "int",
-          "example": "504"
+          "example": 504
         },
         "error": {
           "type": "String",
